@@ -1,10 +1,12 @@
-package JDBCon;
+package JDBCon.DbMain;
+
+import JDBCon.Model.Request;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class DbMain {
-
+    static Scanner s = new Scanner(System.in);
     public static final String CUSTOMER = "customer";
     public static final String SUBSCRIBER = "subscriber";
     public static final String CUSTOMER_ID = "customer_id";
@@ -14,8 +16,6 @@ public class DbMain {
     public static final String CREATED_BY = "CreatedBy:";
     public static final String LEGACY = "LEGACY";
     public static final String MIGRATED = "MIGRATED";
-
-    static Scanner s = new Scanner(System.in);
 
     public static boolean checkId(String Id, Statement stmt, String s) throws Exception {
         String Checkid = "Select * from " + s + " where customer_id='" + Id + "';";
@@ -28,7 +28,7 @@ public class DbMain {
         }
     }
 
-    public void add(request r, Statement stmt) throws Exception {
+    public void add(Request r, Statement stmt) throws Exception {
         System.out.println("Enter number of subscribers");
 
         String AccNo, Status, CBy, SNo;
@@ -55,7 +55,7 @@ public class DbMain {
         }
     }
 
-    public void modify(request r, Statement stmt) {
+    public void modify(Request r, Statement stmt) {
         System.out.println("Modify 1.customer table or 2.subscriber table");
         int c = s.nextInt();
         String id, AccNo, Status, CBy;
@@ -99,7 +99,7 @@ public class DbMain {
     }
 
     public void delete(Statement stmt) throws Exception {
-        System.out.println("Delete from 1.customer or 2.subscriber");
+        System.out.println("DeleteRow from 1.customer or 2.subscriber");
         int c = s.nextInt();
         int i = 1;
         String id, table = "", col = "";
@@ -180,7 +180,7 @@ public class DbMain {
     }
 
     public static void main(String[] args) throws Exception {
-        new jdbConn();
+        new JDBConn();
         DbMain db = new DbMain();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/first?autoReconnect=true&useSSL=false", "root", "root123");
@@ -202,7 +202,7 @@ public class DbMain {
             System.out.println("ServiceNum:");
             SNo = s.next();
 
-            request r = new request(CId, AccNo, Status, CBy, SNo);
+            Request r = new Request(CId, AccNo, Status, CBy, SNo);
 
             if (checkId(CId, stmt, "customer")) {
                 if (Status.equals(MIGRATED) || Status.equals(LEGACY)) {
@@ -216,7 +216,7 @@ public class DbMain {
                 String reply = s.next();
                 if (reply.toLowerCase().equals("y")) {
                     int o = 0;
-                    System.out.println("Do you want to 1.Add , 2.Modify, 3.Delete, 4.List, other for Exit");
+                    System.out.println("Do you want to 1.Add , 2.Modify, 3.DeleteRow, 4.List, other for Exit");
                     o = s.nextInt();
                     switch (o) {
                         case 1:

@@ -1,6 +1,9 @@
-package JDBCon;
+package JDBCon.Model;
 
-public class request
+/*
+ * A POJO Class to define our DB structure
+ */
+public class Request
 {
     private String customerId;
     private String accountNum;
@@ -8,7 +11,7 @@ public class request
     private String createdBy;
     private String serviceNum;
 
-    request(String CustomerId,String AccountNum,String Status,String CreatedBy,String ServiceNum)
+    public Request(String CustomerId, String AccountNum, String Status, String CreatedBy, String ServiceNum)
     {
         this.customerId = CustomerId;
         this.accountNum = AccountNum;
