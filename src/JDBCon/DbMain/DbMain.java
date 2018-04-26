@@ -1,11 +1,17 @@
 package JDBCon.DbMain;
 
 import JDBCon.Model.Request;
-
 import java.sql.*;
 import java.util.Scanner;
 
+/**
+ * A class which contains all the JDBC CRUD operations performed
+ *
+ * @author Jfredricks
+ * @version 1.0
+ */
 public class DbMain {
+
     static Scanner s = new Scanner(System.in);
     public static final String CUSTOMER = "customer";
     public static final String SUBSCRIBER = "subscriber";
@@ -17,17 +23,32 @@ public class DbMain {
     public static final String LEGACY = "LEGACY";
     public static final String MIGRATED = "MIGRATED";
 
-    public static boolean checkId(String Id, Statement stmt, String s) throws Exception {
-        String Checkid = "Select * from " + s + " where customer_id='" + Id + "';";
+    /**
+     * Checks if the id exists in a table or not
+     *
+     * @param id        is the id used to retrieve the row
+     * @param stmt      is the SQL statement to be executed
+     * @param tableName is the name of the table used
+     * @return false if a row with id already exists or else true
+     * @throws Exception
+     */
+    public static boolean checkId(String id, Statement stmt, String tableName) throws Exception {
+        String Checkid = "Select * from " + tableName + " where customer_id='" + id + "';";
         ResultSet rs = stmt.executeQuery(Checkid);
         if (rs.next()) {
-            System.out.println(s + " already exists");
+            System.out.println(tableName + " already exists");
             return false;
         } else {
             return true;
         }
     }
 
+    /**
+     * Adds rows into subscriber table
+     * @param r is the Object with values to be entered
+     * @param stmt is the SQL statement to be executed
+     * @throws Exception
+     */
     public void add(Request r, Statement stmt) throws Exception {
         System.out.println("Enter number of subscribers");
 
@@ -55,6 +76,11 @@ public class DbMain {
         }
     }
 
+    /**
+     * Modifies the tables selected by the user and update the column values
+     * @param r is the Object containing values to be updated
+     * @param stmt is the SQL statement to be executed
+     */
     public void modify(Request r, Statement stmt) {
         System.out.println("Modify 1.customer table or 2.subscriber table");
         int c = s.nextInt();
@@ -94,10 +120,14 @@ public class DbMain {
             stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println("Terminating due to invalid inputs");
-
         }
     }
 
+    /**
+     * Deletes the rows form the tables based on rowId the user has entered
+     * @param stmt is the SQL statement tot be executed
+     * @throws Exception
+     */
     public void delete(Statement stmt) throws Exception {
         System.out.println("DeleteRow from 1.customer or 2.subscriber");
         int c = s.nextInt();
@@ -145,6 +175,10 @@ public class DbMain {
         } while (i > 1);
     }
 
+    /**
+     * Lists all the rows present in a table
+     * @param stmt
+     */
     public void list(Statement stmt) {
         String sql = "SELECT * FROM ";
         int count = 0;
@@ -176,9 +210,16 @@ public class DbMain {
         } catch (SQLException e) {
             System.out.println("Invalid inputs, Connection Terminated");
         }
-
     }
 
+    /**
+     * <p>
+     * Establishes a connection with the Database and gets the details to be entered
+     * Lists all the services for the user to select whichever service he wants
+     * </p>
+     * @param args is unused
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         new JDBConn();
         DbMain db = new DbMain();
@@ -187,7 +228,6 @@ public class DbMain {
         Statement stmt = con.createStatement();
 
         do {
-
             String CId, AccNo, Status, CBy, SNo;
             System.out.println("Enter your details [Details cannot be null]");
 
@@ -199,7 +239,7 @@ public class DbMain {
             Status = s.next();
             System.out.println(CREATED_BY);
             CBy = s.next();
-            System.out.println("ServiceNum:");
+            System.out.println(SERVICE_NUMBER);
             SNo = s.next();
 
             Request r = new Request(CId, AccNo, Status, CBy, SNo);

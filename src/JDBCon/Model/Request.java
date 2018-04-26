@@ -1,7 +1,7 @@
 package JDBCon.Model;
 
-/*
- * A POJO Class to define our DB structure
+/**
+ * A POJO class which contains our table structure
  */
 public class Request
 {

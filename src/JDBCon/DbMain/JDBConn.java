@@ -2,12 +2,14 @@ package JDBCon.DbMain;
 
 import java.sql.*;
 
-/*
- * Establishes the connection to the Database
+/**
+ * Establishes connection to the MySql Database and creates the tables if the don't exist
+ * @author Jfredricks
+ * @version 1.0
  */
 class JDBConn {
-    /*
-     * Creates the tables if they aren't present in the DB
+    /**
+     * Constructor which creates tables customer and subscriber
      */
     public JDBConn() {
 		try
