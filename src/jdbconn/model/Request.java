@@ -1,4 +1,4 @@
-package JDBCon.Model;
+package jdbconn.model;
 
 /**
  * A POJO class which contains our table structure
@@ -11,13 +11,13 @@ public class Request
     private String createdBy;
     private String serviceNum;
 
-    public Request(String CustomerId, String AccountNum, String Status, String CreatedBy, String ServiceNum)
+    public Request(String customerId, String accountNum, String status, String createdBy, String serviceNum)
     {
-        this.customerId = CustomerId;
-        this.accountNum = AccountNum;
-        this.status = Status;
-        this.createdBy = CreatedBy;
-        this.serviceNum = ServiceNum;
+        this.customerId = customerId;
+        this.accountNum = accountNum;
+        this.status = status;
+        this.createdBy = createdBy;
+        this.serviceNum = serviceNum;
     }
 
     public String getCustomerId()

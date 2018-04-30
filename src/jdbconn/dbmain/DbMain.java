@@ -1,6 +1,6 @@
-package JDBCon.DbMain;
+package jdbconn.dbmain;
 
-import JDBCon.Model.Request;
+import jdbconn.model.Request;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -11,7 +11,6 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class DbMain {
-
     static Scanner s = new Scanner(System.in);
     public static final String CUSTOMER = "customer";
     public static final String SUBSCRIBER = "subscriber";
@@ -22,6 +21,10 @@ public class DbMain {
     public static final String CREATED_BY = "CreatedBy:";
     public static final String LEGACY = "LEGACY";
     public static final String MIGRATED = "MIGRATED";
+    private String accNo;
+    private String status;
+    private String cBy;
+    private String id;
 
     /**
      * Checks if the id exists in a table or not
@@ -33,8 +36,8 @@ public class DbMain {
      * @throws Exception
      */
     public static boolean checkId(String id, Statement stmt, String tableName) throws Exception {
-        String Checkid = "Select * from " + tableName + " where customer_id='" + id + "';";
-        ResultSet rs = stmt.executeQuery(Checkid);
+        String checkId = "Select * from " + tableName + " where customer_id='" + id + "';";
+        ResultSet rs = stmt.executeQuery(checkId);
         if (rs.next()) {
             System.out.println(tableName + " already exists");
             return false;
@@ -50,25 +53,22 @@ public class DbMain {
      * @throws Exception
      */
     public void add(Request r, Statement stmt) throws Exception {
+        String sNo;
         System.out.println("Enter number of subscribers");
-
-        String AccNo, Status, CBy, SNo;
         int n = s.nextInt();
-
         System.out.println("Enter your details");
-
         while (n > 0) {
             System.out.println();
             System.out.println(ACCOUNTNUMBER);
-            AccNo = s.next();
+            accNo = s.next();
             System.out.println(STATUS);
-            Status = s.next();
+            status = s.next();
             System.out.println(CREATED_BY);
-            CBy = s.next();
+            cBy = s.next();
             System.out.println("ServiceNum:");
-            SNo = s.next();
-            if (checkId(SNo, stmt, "subscriber")) {
-                String subs = "INSERT INTO subscriber VALUES ('" + SNo + "','" + r.getCustomerId() + "','" + AccNo + "','" + Status + "','" + CBy + "');";
+            sNo = s.next();
+            if (checkId(sNo, stmt, SUBSCRIBER)) {
+                String subs = "INSERT INTO subscriber VALUES ('" + sNo + "','" + r.getCustomerId() + "','" + accNo + "','" + status + "','" + cBy + "');";
                 stmt.execute(subs);
                 n--;
             } else
@@ -84,8 +84,9 @@ public class DbMain {
     public void modify(Request r, Statement stmt) {
         System.out.println("Modify 1.customer table or 2.subscriber table");
         int c = s.nextInt();
-        String id, AccNo, Status, CBy;
-        String sql = "", table = "", col = "";
+        String sql = "";
+        String table = "";
+        String col = "";
 
         if (c == 1) {
             table = CUSTOMER;
@@ -102,19 +103,19 @@ public class DbMain {
 
         System.out.println("Enter modified details, press enter if not modified");
         System.out.println(ACCOUNTNUMBER);
-        AccNo = s.next();
-        if (AccNo.equals("\n")) AccNo += r.getAccountNum();
+        accNo = s.next();
+        if (accNo.equals("\n")) accNo += r.getAccountNum();
         System.out.println(STATUS);
-        Status = s.next();
-        if (Status.equals("\n")) Status += r.getStatus();
+        status = s.next();
+        if (status.equals("\n")) status += r.getStatus();
         System.out.println(CREATED_BY);
-        CBy = s.next();
-        if (CBy.equals("\n")) CBy += r.getCreatedBy();
+        cBy = s.next();
+        if (cBy.equals("\n")) cBy += r.getCreatedBy();
 
         System.out.println("Enter the id you want to modify");
         id = s.next();
 
-        sql = "UPDATE " + table + " SET AccountNumber ='" + AccNo + "', Status ='" + Status + "', CreatedBy ='" + CBy + "' WHERE " + col + " = " + id + ";";
+        sql = "UPDATE " + table + " SET AccountNumber ='" + accNo + "', Status ='" + status + "', CreatedBy ='" + cBy + "' WHERE " + col + " = " + id + ";";
 
         try {
             stmt.execute(sql);
@@ -132,20 +133,21 @@ public class DbMain {
         System.out.println("DeleteRow from 1.customer or 2.subscriber");
         int c = s.nextInt();
         int i = 1;
-        String id, table = "", col = "";
+        String table = "";
+        String col = "";
 
         do {
             System.out.println("Enter the CustomerId or ServiceNum you want to delete");
             id = s.next();
             System.out.println();
-            String Checkid = "Select * from customer where customer_id ='" + id + "';";
-            ResultSet rs = stmt.executeQuery(Checkid);
+            String checkId = "Select * from customer where customer_id ='" + id + "';";
+            ResultSet rs = stmt.executeQuery(checkId);
 
             if (c == 1) {
                 if (rs.next()) {
                     System.out.println("Records with this CustomerId will also be deleted in subscriber table");
                     System.out.println("Do you want to exit now?(y/n)");
-                    if (s.next().toLowerCase().equals("y")) {
+                    if (s.next().equalsIgnoreCase("y")) {
                         String subs = "DELETE from subscriber where customer_id = '" + id + "';";
                         stmt.execute(subs);
                     }
@@ -228,24 +230,28 @@ public class DbMain {
         Statement stmt = con.createStatement();
 
         do {
-            String CId, AccNo, Status, CBy, SNo;
+            String cId;
+            String accNo;
+            String status;
+            String cBy;
+            String sNo;
             System.out.println("Enter your details [Details cannot be null]");
 
             System.out.println(CUSTOMER_ID);
-            CId = s.next();
+            cId = s.next();
             System.out.println(ACCOUNTNUMBER);
-            AccNo = s.next();
+            accNo = s.next();
             System.out.println(STATUS);
-            Status = s.next();
+            status = s.next();
             System.out.println(CREATED_BY);
-            CBy = s.next();
+            cBy = s.next();
             System.out.println(SERVICE_NUMBER);
-            SNo = s.next();
+            sNo = s.next();
 
-            Request r = new Request(CId, AccNo, Status, CBy, SNo);
+            Request r = new Request(cId, accNo, status, cBy, sNo);
 
-            if (checkId(CId, stmt, "customer")) {
-                if (Status.equals(MIGRATED) || Status.equals(LEGACY)) {
+            if (checkId(cId, stmt, CUSTOMER)) {
+                if (status.equals(MIGRATED) || status.equals(LEGACY)) {
                     String cust = "INSERT INTO customer VALUES ('" + r.getCustomerId() + "','" + r.getAccountNum() + "','" + r.getStatus() + "','" + r.getCreatedBy() + "');";
                     stmt.execute(cust);
                     System.out.println("Record Created");
@@ -254,7 +260,7 @@ public class DbMain {
             } else {
                 System.out.println("Do you want to add new subscribers?(Y/N)");
                 String reply = s.next();
-                if (reply.toLowerCase().equals("y")) {
+                if (reply.equalsIgnoreCase("y")) {
                     int o = 0;
                     System.out.println("Do you want to 1.Add , 2.Modify, 3.DeleteRow, 4.List, other for Exit");
                     o = s.nextInt();

@@ -1,4 +1,4 @@
-package JDBCon.DbMain;
+package jdbconn.dbmain;
 
 import java.sql.*;
 
